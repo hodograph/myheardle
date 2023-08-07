@@ -1,0 +1,85 @@
+﻿@inherits LayoutComponentBase
+
+@implements IDisposable
+
+@using Caerostris.Services.Spotify
+@using Blazored.Modal
+@using MyHeardle.Shared.Auth
+
+@inject SpotifyService Spotify
+@inject NavigationManager NavManager
+
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" @ref="@_mudThemeProvider" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        MyHeardle
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu/>
+        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode"/>
+    </MudDrawer>
+    <MudMainContent>
+        @if (ShouldRenderBody)
+        {
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                @Body
+            </MudContainer>
+        }
+
+        <AuthDaemon />
+        <BlazoredModal />
+    </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = false;
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
+    private MudThemeProvider _mudThemeProvider;
+
+    private bool authAquired = false;
+
+    // Centralizes the authorization check.
+    // The only exception is the callback page, where the user is shown a message about the impending redirect while the application is aquiring authorization.
+    private bool ShouldRenderBody =>
+        (authAquired || NavManager.Uri.Contains(Spotify.Auth.RelativeCallbackUrl));
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Spotify.Auth.AuthStateChanged += OnAuthStateChanged;
+
+        authAquired = await Spotify.Auth.IsUserLoggedIn();
+    }
+
+    private async void OnAuthStateChanged(bool aquired)
+    {
+        await InvokeAsync(() =>
+        {
+            authAquired = aquired;
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        Spotify.Auth.AuthStateChanged -= OnAuthStateChanged;
+    }
+}

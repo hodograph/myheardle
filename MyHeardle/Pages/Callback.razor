@@ -1,0 +1,20 @@
+﻿@page "/callback"
+
+@namespace Caerostris.Pages.Callback
+
+@using Caerostris.Services.Spotify
+
+@inject SpotifyService Spotify
+@inject NavigationManager NavManager
+
+
+    <CenteredInfo Text="Please wait, you should be getting redirected soon. Communicating with the authorization server..." />
+
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        await Spotify.Auth.ContinueAuthOnCallback(NavManager.ToAbsoluteUri(Spotify.Auth.RelativeCallbackUrl).ToString());
+    }
+}

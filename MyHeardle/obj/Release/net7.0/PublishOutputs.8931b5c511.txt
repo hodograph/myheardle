@@ -1,0 +1,1 @@
+C:\Users\jjdea\source\repos\MyHeardle\MyHeardle\obj\Release\net7.0\browser-wasm\PubTmp\Out\web.config

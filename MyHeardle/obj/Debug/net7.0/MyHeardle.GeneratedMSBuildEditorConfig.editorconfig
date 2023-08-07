@@ -1,0 +1,69 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = MyHeardle
+build_property.RootNamespace = MyHeardle
+build_property.ProjectDir = C:\Users\jjdea\source\repos\MyHeardle\MyHeardle\
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\jjdea\source\repos\MyHeardle\MyHeardle
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Pages/Callback.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FsbGJhY2sucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Pages/FetchData.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmV0Y2hEYXRhLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Pages/PlayTrack.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGxheVRyYWNrLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Pages/TrackSelect.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHJhY2tTZWxlY3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Shared/Auth/AuthDaemon.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEF1dGhcQXV0aERhZW1vbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Shared/Auth/AuthModal.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEF1dGhcQXV0aE1vZGFsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-4y3i80bo21
+
+[C:/Users/jjdea/source/repos/MyHeardle/MyHeardle/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-3wy1jcyinb

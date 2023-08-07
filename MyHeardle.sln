@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHeardle", "MyHeardle\MyHeardle.csproj", "{64772CA2-5E9B-40B1-B916-FA54D9C336B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caerostris.Services.Spotify", "SpotifyService\Caerostris.Services.Spotify.csproj", "{A7F76355-C2FA-4C98-BB67-42043C8AC243}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{64772CA2-5E9B-40B1-B916-FA54D9C336B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64772CA2-5E9B-40B1-B916-FA54D9C336B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64772CA2-5E9B-40B1-B916-FA54D9C336B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64772CA2-5E9B-40B1-B916-FA54D9C336B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7F76355-C2FA-4C98-BB67-42043C8AC243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7F76355-C2FA-4C98-BB67-42043C8AC243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7F76355-C2FA-4C98-BB67-42043C8AC243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7F76355-C2FA-4C98-BB67-42043C8AC243}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A4EFC003-BF0B-40C1-8E37-59BE7673F7BC}
+	EndGlobalSection
+EndGlobal

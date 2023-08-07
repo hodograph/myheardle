@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Blazor.Extensions.Storage" Version="1.1.0-preview3" />
+    <PackageReference Include="Caerostris.Services.Spotify.IndexedDB" Version="1.5.12-preview" />
+    <PackageReference Include="Humanizer.Core" Version="2.8.26" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SpotifyAPI.Web" Version="6.0.0" />
+    <PackageReference Include="SpotifyAuthServer.Model" Version="1.0.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Blazor.Extensions.Storage">
+      <HintPath>..\Storage\src\Blazor.Extensions.Storage\bin\Release\netstandard2.0\Blazor.Extensions.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Blazor.Extensions.Storage.JS">
+      <HintPath>..\Storage\src\Blazor.Extensions.Storage\bin\Release\netstandard2.0\Blazor.Extensions.Storage.JS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

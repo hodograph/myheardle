@@ -1,0 +1,24 @@
+﻿@using Caerostris.Services.Spotify
+
+@inject SpotifyService Spotify
+@inject NavigationManager NavManager
+
+
+    <hr>
+
+    <MudText>Note: to access the full functionality of this app, you'll need to connect a Spotify Premium account. MyHeardle places cookies in your browser to enable Spotify authorization. 
+
+All of your data stays on your device. MyHeardle uses the Spotify Web Playback SDK to play music in the browser.</MudText>
+
+    <hr>
+
+<button @onclick=@OnConnectAccountButtonClick class="btn btn-primary float-right">Connect account</button>
+
+
+@code
+{
+    private async Task OnConnectAccountButtonClick()
+    {
+        await Spotify.Auth.StartAuth(NavManager.ToAbsoluteUri(Spotify.Auth.RelativeCallbackUrl).ToString());
+    }
+}

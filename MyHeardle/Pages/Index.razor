@@ -1,0 +1,61 @@
+﻿@page "/"
+
+@using Caerostris.Services.Spotify
+@using System
+@using Microsoft.Extensions.Configuration
+
+@implements IDisposable
+
+@inject IConfiguration Configuration
+@inject NavigationManager navManager
+@inject SpotifyService Spotify
+
+@if (_loggedIn)
+{
+    <MudStack AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.h2">Welcome @username</MudText>
+        <MudStack Row="true" Justify="Justify.Center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/trackSelection">Single Song</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/playlistSelection" Disabled="true">Playlist</MudButton>
+        </MudStack>
+        
+    </MudStack>
+}
+
+@code {
+
+    private int? _totalPlaylistCount;
+
+    private bool _loggedIn;
+
+    private string username;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Spotify.Auth.AuthStateChanged += OnAuthStateChanged;
+
+        await FillUsername();
+    }
+
+    private void OnAuthStateChanged(bool acquired)
+    {
+        if (acquired)
+            InvokeAsync(() => FillUsername());
+    }
+
+    private async Task FillUsername()
+    {
+        _loggedIn = await Spotify.Auth.IsUserLoggedIn();
+        if (_loggedIn)
+        {
+            username ??= await Spotify.User.GetUsername();
+        }
+
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        Spotify.Auth.AuthStateChanged -= OnAuthStateChanged;
+    }
+}

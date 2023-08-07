@@ -1,0 +1,46 @@
+﻿﻿@using Blazored.Modal
+@using Blazored.Modal.Services
+
+
+@implements IDisposable
+
+@using Caerostris.Services.Spotify
+
+@inject SpotifyService Spotify
+@inject NavigationManager NavManager
+
+
+@code
+{
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+    /// <summary>
+    /// The AuthDaemon component is responsible for orchestrating the authorization process.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        Spotify.Auth.AuthStateChanged += OnAuthStateChanged;
+
+        // The event won't fire if the user hasn't connected their account yet.
+        // Check for auth state right away.
+        if (!(await Spotify.Auth.IsUserLoggedIn()))
+            OnAuthStateChanged(false);
+    }
+
+    private async void OnAuthStateChanged(bool state)
+    {
+        await InvokeAsync(() => { if (!state && !NavManager.Uri.Contains(Spotify.Auth.RelativeCallbackUrl)) ShowModal(); });
+    }
+
+    private void ShowModal() =>
+        Modal.Show<AuthModal>(title: "Spotify authorization needed", new ModalOptions()
+            {
+                HideCloseButton = true,
+                DisableBackgroundCancel = true
+            });
+
+    public void Dispose()
+    {
+        Spotify.Auth.AuthStateChanged -= OnAuthStateChanged;
+    }
+}

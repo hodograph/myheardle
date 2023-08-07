@@ -1,0 +1,45 @@
+﻿@page "/trackSelection"
+@using Caerostris.Services.Spotify
+@using SpotifyAPI.Web
+@inject NavigationManager NavManager
+@inject SpotifyService Spotify
+
+<MudStack Row="true">
+    <MudAutocomplete T="FullTrack"
+                     Label="Search for a Song"
+                     @bind-Value="_selectedSong"
+                     SearchFunc="@Search"
+                     AdornmentIcon="@Icons.Material.Filled.Search"
+                     ToStringFunc="@(x => x==null?null : $"{x.Name} - {x.Artists.First().Name}")"
+                     ShowProgressIndicator="true" />
+    <MudButton Variant="Variant.Filled"
+               Size="Size.Large"
+               Color="Color.Primary"
+               Disabled="@(_selectedSong is null)" Href="@($"/playTrack/{_selectedSong?.Id}")">Play</MudButton>
+</MudStack>
+
+@code {
+
+    private FullTrack _selectedSong;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!(await Spotify.Auth.IsUserLoggedIn()))
+        {
+            NavManager.NavigateTo("/");
+        }
+    }
+
+    private async Task<IEnumerable<FullTrack>> Search(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            var searchResponse = await Spotify.Explore.Search(value);
+            return searchResponse.Tracks;
+        }
+        else
+        {
+            return null;
+        }
+    }
+}

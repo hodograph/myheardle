@@ -1,0 +1,297 @@
+﻿@page "/playTrack/{TrackId}"
+@using Caerostris.Services.Spotify
+@using SpotifyAPI.Web
+@implements IDisposable
+@inject NavigationManager NavManager
+@inject SpotifyService Spotify
+@inherits LayoutComponentBase
+
+<div class="d-flex flex-grow-1 gap-4 flex-column justify-content-between wrapper">
+    @*<MudStack Justify="Justify.SpaceBetween" Class="d-flex flex-grow-1 wrapper">*@
+    <MudPaper Class="pa-8 flex-none">
+        <MudSimpleTable Striped>
+        <tbody>
+            @foreach (Split split in _splits)
+            {
+                <tr >
+                    <td>
+                        @if (split.Guess != null)
+                        {
+                            @if (split.Guess.Id == "Skipped")
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.FastForward" Color="Color.Warning" />
+                            }
+                            else if (split.Guess.Id == TrackId)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.RemoveCircle" Color="Color.Error" />
+                            }
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Dark" />
+                        }
+                    </td>
+                    <td>
+                        @if (split.Guess != null)
+                        {
+                            @if(split.Guess.Id == "Skipped")
+                            {
+                                <MudText Align="Align.Right">@($"{split.Guess.Id}")</MudText>
+                            }
+                            else
+                            {
+                                <MudText Align="Align.Right">@($"{split.Guess.Name} - {split.Guess.Artists.First().Name}")</MudText>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+    </MudPaper>
+    <MudPaper Class="pa-8 flex-auto">
+        @if (Won || Lost)
+        {
+            <MudStack Row="true">
+                <MudImage Src="@_albumArt?.Url" Width="150" Class="rounded-lg"/>
+                <MudStack>
+                    <MudText Typo="Typo.h3">@_title</MudText>
+                    <MudStack Row="true">
+                        @foreach(string artist in _artists)
+                        {
+                            <MudText Typo="Typo.subtitle1">@artist </MudText>
+                        }
+                    </MudStack>
+                </MudStack>
+            </MudStack>
+        }
+        else
+        {
+            <MudStack Row="true">
+                <MudIcon Icon="fas fa-record-vinyl fa-spin" Size="Size.Large" />
+                <MudText Typo="Typo.h3">Guess the song</MudText>
+            </MudStack>
+        }
+    </MudPaper>
+    <MudPaper Class="pa-8 flex-none">
+        <MudStack Row="true">
+            @if (Won || Lost)
+            {
+                <MudProgressLinear Indeterminate="false"
+                                Class="my-8 mb-2"
+                                Color="Color.Primary"
+                                Size="Size.Small"
+                                Max="@_fulltrackMs"
+                                Value="@_position" />
+            }
+            else
+            {
+                <MudProgressLinear Indeterminate="false" 
+                                    Class="my-8 mb-2" 
+                                    Color="Color.Primary" 
+                                    Size="Size.Small" 
+                                    Max="@(_seconds * 1000)" 
+                                    Value="@_position" />
+            }
+        </MudStack>
+        <MudStack Row="true" Justify="Justify.SpaceBetween">
+            <MudText>0:00</MudText>
+            <MudStack Row="true">
+                <MudToggleIconButton Icon="@Icons.Material.Filled.PlayCircleFilled"
+                                        ToggledIcon="@Icons.Material.Filled.PauseCircleFilled"
+                                        Color="Color.Primary"
+                                        ToggledColor="Color.Primary"
+                                        Size="Size.Large"
+                                        ToggledSize="Size.Large"
+                                        ToggledChanged="PlayPause"
+                                        Toggled="@_playing" />
+                <MudIconButton Icon="@Icons.Material.Filled.FastForward" 
+                                Color="Color.Primary" 
+                                Size="Size.Large" 
+                                OnClick="Skip" />
+            </MudStack>
+            @if(Won || Lost)
+            {
+
+                <MudText>@TimeSpan.FromMilliseconds(_fulltrackMs).ToString(@"m\:ss")</MudText>
+            }
+            else if (_seconds < 10)
+            {
+                <MudText>0:0@_seconds</MudText>
+            }
+            else
+            {
+                <MudText>0:@_seconds</MudText>
+            }
+        </MudStack>
+        <MudStack Row="true">
+            <MudAutocomplete T="FullTrack"
+                                Label="Search for a Song"
+                                @bind-Value="_selectedSong"
+                                SearchFunc="@Search"
+                                AdornmentIcon="@Icons.Material.Filled.Search"
+                                ToStringFunc="@(x => x==null?null : $"{x.Name} - {x.Artists.First().Name}")"
+                                ShowProgressIndicator="true"
+                                DebounceInterval="1000" 
+                                Disabled="PlaybackContext?.IsPlaying ?? true" />
+            <MudButton ButtonType="ButtonType.Submit"
+                        Color="Color.Primary"
+                        Size="Size.Large"
+                        Variant="Variant.Filled"
+                        Disabled="@(_selectedSong is null)"
+                        OnClick="Guess">Guess</MudButton>
+        </MudStack>
+
+    </MudPaper>
+@*</MudStack>*@
+</div>
+
+@code {
+    [Parameter]
+    public string TrackId { get; set; }
+
+    private FullTrack _selectedSong;
+
+    private Split[] _splits = {new Split(1), new Split(1), new Split(2), new Split(3), new Split(4), new Split(5)};
+
+    private Image _albumArt;
+    private string _title;
+    private List<string> _artists;
+    private int _fulltrackMs;
+
+    private bool _playing;
+
+    public int _position { get; set; } = 0;
+
+    private uint _seconds
+    {
+        get
+        {
+            uint value = 0;
+            foreach(Split split in _splits)
+            {
+                value += split.Seconds;
+                if(split.Guess is null)
+                {
+                    break;
+                }
+            }
+            return value;
+        }
+    }
+
+    public bool Won
+    {
+        get => _splits.Any(x => x.Guess?.Id == TrackId);
+    }
+
+    public bool Lost
+    {
+        get => _splits.Last().Guess?.Id != TrackId && _splits.All(x => x.Guess != null);
+    }
+
+    private CurrentlyPlayingContext? PlaybackContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Spotify.Playback.PlaybackChanged += ContextChanged;
+
+        if (await Spotify.Auth.IsUserLoggedIn())
+            PlaybackContext = await Spotify.Playback.GetPlayback();
+    }
+
+
+    private async Task ContextChanged(CurrentlyPlayingContext context)
+    {
+        await InvokeAsync(() =>
+        {
+            PlaybackContext = context;
+        });
+
+        if(PlaybackContext.Item is FullTrack track)
+        {
+            _albumArt = track.Album.Images.FirstOrDefault();
+            _title = track.Name;
+            _artists = track.Artists.Select(x => x.Name).ToList();
+            _fulltrackMs = track.DurationMs;
+        }
+    }
+
+    public void Dispose()
+    {
+        Spotify.Playback.PlaybackChanged -= ContextChanged;
+    }
+
+    private async Task<IEnumerable<FullTrack>> Search(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            var searchResponse = await Spotify.Explore.Search(value);
+            return searchResponse.Tracks;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public async void PlayPause(bool toggled)
+    {
+        if (PlaybackContext?.IsPlaying == false)
+        {
+            _playing = true;
+            await Spotify.Playback.PlayTracks(new List<string>() { $"spotify:track:{TrackId}" });
+            do
+            {
+                _position = Spotify.Playback.GetProgressMs();
+                StateHasChanged();
+                await Task.Delay(100);
+            }
+            while ((Won || Lost) ? _position < _fulltrackMs : _position / 1000 < _seconds);
+
+            if(Won || Lost)
+            {
+                _position = _fulltrackMs;
+            }
+            else
+            {
+                _position = (int)_seconds * 1000;
+            }
+            await Spotify.Playback.Pause();
+            _playing = false;
+            _position = 0;
+
+            StateHasChanged();
+        }
+        else if (PlaybackContext?.IsPlaying == true)
+        {
+            await Spotify.Playback.Pause();
+            _playing = false;
+
+            StateHasChanged();
+        }
+    }    
+
+    public async void Skip()
+    {
+        Split? split = _splits.FirstOrDefault(x => x.Guess == null);
+        if (split != null)
+        {
+            split.Guess = new FullTrack() { Id = "Skipped" };
+        }
+    }
+
+    public void Guess()
+    {
+        Split? split = _splits.FirstOrDefault(x => x.Guess == null);
+        if (split != null)
+        {
+            split.Guess = _selectedSong;
+            _selectedSong = null;
+        }
+    }
+}
